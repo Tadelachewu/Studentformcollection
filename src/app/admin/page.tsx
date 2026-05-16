@@ -2,16 +2,17 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Users, 
-  Search, 
-  Filter, 
-  Download, 
-  Settings, 
-  LogOut, 
-  RefreshCw, 
-  Trash2, 
+import {
+  Users,
+  Search,
+  Filter,
+  Download,
+  Settings,
+  LogOut,
+  RefreshCw,
+  Trash2,
   Eye,
   CheckCircle,
   Clock,
@@ -60,10 +61,10 @@ export default function AdminDashboard() {
       const res = await fetch('/api/admin/settings');
       if (res.ok) {
         const data = await res.json();
-        setSettings({ 
-          username: data.username, 
-          password: '', 
-          exportedCount: data.exportedCount || 0 
+        setSettings({
+          username: data.username,
+          password: '',
+          exportedCount: data.exportedCount || 0
         });
       }
     } catch (err) {
@@ -132,7 +133,7 @@ export default function AdminDashboard() {
     fetchSettings();
   }, []);
 
-  const filteredSubmissions = submissions.filter(sub => 
+  const filteredSubmissions = submissions.filter(sub =>
     sub.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     sub.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -147,13 +148,18 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-white flex flex-col">
+    <div className="min-h-screen text-white flex flex-col">
       {/* Navbar */}
       <header className="border-b border-white/5 bg-background/50 backdrop-blur-xl sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-primary/10 p-2 rounded-xl text-primary">
-              <Users size={24} />
+            <div className="relative w-12 h-12 overflow-hidden rounded-xl border border-white/10">
+              <Image
+                src="/admin-logo.svg"
+                alt="Admin Logo"
+                fill
+                className="object-cover"
+              />
             </div>
             <div>
               <h1 className="font-bold text-xl">Admin Dashboard</h1>
@@ -161,13 +167,13 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <button 
+            <button
               onClick={() => { fetchSettings(); setShowSettings(true); }}
               className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white"
             >
               <Settings size={20} />
             </button>
-            <button 
+            <button
               onClick={handleLogout}
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent/10 hover:bg-accent/20 text-accent transition-colors font-medium text-sm"
             >
@@ -178,7 +184,7 @@ export default function AdminDashboard() {
       </header>
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-8 space-y-8">
-        
+
         {/* Stats & Actions */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -199,14 +205,14 @@ export default function AdminDashboard() {
           <div className="glass-panel p-6 flex flex-col justify-between gap-4">
             <div className="flex items-center justify-between text-sm">
               <span className="text-white/40">Export Limit</span>
-              <input 
-                type="number" 
-                value={exportLimit} 
+              <input
+                type="number"
+                value={exportLimit}
                 onChange={e => setExportLimit(parseInt(e.target.value) || 1)}
                 className="bg-white/10 w-16 text-center rounded-lg py-1 border border-white/5 focus:outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
-            <button 
+            <button
               onClick={handleExport}
               className="btn-primary w-full py-2.5 flex items-center justify-center gap-2 text-sm"
             >
@@ -220,9 +226,9 @@ export default function AdminDashboard() {
           <div className="p-6 border-b border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
-              <input 
-                type="text" 
-                placeholder="Search by name or email..." 
+              <input
+                type="text"
+                placeholder="Search by name or email..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className="w-full bg-white/5 border border-white/5 rounded-xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
@@ -247,14 +253,14 @@ export default function AdminDashboard() {
               </thead>
               <tbody className="divide-y divide-white/5">
                 {isLoading ? (
-                   <tr><td colSpan={4} className="px-6 py-12 text-center text-white/20">Loading records...</td></tr>
+                  <tr><td colSpan={4} className="px-6 py-12 text-center text-white/20">Loading records...</td></tr>
                 ) : filteredSubmissions.length === 0 ? (
                   <tr><td colSpan={4} className="px-6 py-12 text-center text-white/20">No matching records found.</td></tr>
                 ) : filteredSubmissions.map((sub) => {
                   const status = getStatusInfo(sub.status);
                   return (
-                    <motion.tr 
-                      key={sub.id} 
+                    <motion.tr
+                      key={sub.id}
                       layout
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -276,13 +282,13 @@ export default function AdminDashboard() {
                       </td>
                       <td className="px-6 py-5">
                         <div className="flex items-center justify-end gap-3">
-                          <button 
+                          <button
                             onClick={() => setSelectedSubmission(sub)}
                             className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-all"
                           >
                             <Eye size={18} />
                           </button>
-                          <select 
+                          <select
                             value={sub.status || 'pending'}
                             onChange={(e) => handleStatusChange(sub.id!, e.target.value)}
                             className="bg-white/5 text-xs rounded-lg border-white/5 px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
@@ -292,7 +298,7 @@ export default function AdminDashboard() {
                             <option value="accepted" className="bg-background">Accepted</option>
                             <option value="rejected" className="bg-background">Rejected</option>
                           </select>
-                          <button 
+                          <button
                             onClick={() => handleDelete(sub.id!)}
                             className="p-2 rounded-lg bg-red-500/5 hover:bg-red-500/20 text-red-500/60 hover:text-red-500 transition-all"
                           >
@@ -313,14 +319,14 @@ export default function AdminDashboard() {
       <AnimatePresence>
         {selectedSubmission && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedSubmission(null)}
               className="absolute inset-0 bg-black/80 backdrop-blur-sm"
             />
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -332,7 +338,7 @@ export default function AdminDashboard() {
                   <X size={24} />
                 </button>
               </div>
-              
+
               <div className="flex-1 overflow-y-auto p-8 space-y-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   <DetailItem icon={<User />} label="Full Name" value={selectedSubmission.fullName} />
@@ -359,8 +365,8 @@ export default function AdminDashboard() {
                         <p className="text-sm text-white/40">{selectedSubmission.educationDocumentName || "Attachment"}</p>
                       </div>
                     </div>
-                    <a 
-                      href={selectedSubmission.educationDocument} 
+                    <a
+                      href={selectedSubmission.educationDocument}
                       download={selectedSubmission.educationDocumentName}
                       className="btn-primary py-2 px-6 text-sm"
                     >
@@ -375,14 +381,14 @@ export default function AdminDashboard() {
 
         {showSettings && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowSettings(false)}
               className="absolute inset-0 bg-black/80 backdrop-blur-sm"
             />
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -394,17 +400,17 @@ export default function AdminDashboard() {
               </div>
 
               <form onSubmit={handleUpdateSettings} className="space-y-6">
-                <Input 
-                  label="New Admin Username" 
-                  value={settings.username} 
-                  onChange={e => setSettings({...settings, username: e.target.value})} 
+                <Input
+                  label="New Admin Username"
+                  value={settings.username}
+                  onChange={e => setSettings({ ...settings, username: e.target.value })}
                   required
                 />
-                <Input 
-                  label="New Admin Password" 
+                <Input
+                  label="New Admin Password"
                   type="password"
-                  value={settings.password} 
-                  onChange={e => setSettings({...settings, password: e.target.value})} 
+                  value={settings.password}
+                  onChange={e => setSettings({ ...settings, password: e.target.value })}
                   required
                 />
                 <div className="pt-4">

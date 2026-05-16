@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Lock, User, ShieldCheck, ArrowRight } from 'lucide-react';
 import { Input } from '@/components/FormElements';
@@ -39,15 +40,20 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-950 via-background to-background">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
         <div className="text-center mb-8 space-y-2">
-          <div className="inline-flex p-3 rounded-2xl bg-primary/10 text-primary mb-2">
-            <ShieldCheck size={32} />
+          <div className="inline-flex relative w-16 h-16 mb-2">
+            <Image 
+              src="/admin-logo.svg" 
+              alt="Admin Logo" 
+              fill
+              className="object-cover"
+            />
           </div>
           <h1 className="text-3xl font-bold text-white tracking-tight">Admin Console</h1>
           <p className="text-white/40">Secure access to admission records</p>

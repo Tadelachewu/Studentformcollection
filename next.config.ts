@@ -3,6 +3,10 @@ import path from "path";
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["@prisma/client"],
+  outputFileTracingRoot: path.join(__dirname, "./"),
+  turbopack: {
+    root: path.join(__dirname, "./"),
+  },
 };
 
 export default nextConfig;
