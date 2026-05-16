@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const outfit = Outfit({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Student Admission Portal | Premium App",
-  description: "A modern, stunning student admission portal.",
+  title: "Tech Academic | Admission Portal",
+  description: "A high-tech, modern admission portal for Tech Academic students.",
 };
 
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={outfit.className}>
         {children}
       </body>
     </html>

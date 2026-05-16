@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import styles from './page.module.css';
+import { motion } from 'framer-motion';
+import { Lock, User, ShieldCheck, ArrowRight } from 'lucide-react';
 import { Input } from '@/components/FormElements';
 
 export default function AdminLogin() {
@@ -28,47 +29,79 @@ export default function AdminLogin() {
         router.push('/admin');
       } else {
         const data = await response.json();
-        setError(data.error || 'Login failed');
+        setError(data.error || 'Invalid credentials');
       }
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      setError('Connection failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <main className={styles.container}>
-      <div className={`glass-panel ${styles.loginCard}`}>
-        <h1 className={styles.title}>Admin Login</h1>
-        
-        {error && <div className={styles.error}>{error}</div>}
+    <div className="min-h-screen flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-950 via-background to-background">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-md"
+      >
+        <div className="text-center mb-8 space-y-2">
+          <div className="inline-flex p-3 rounded-2xl bg-primary/10 text-primary mb-2">
+            <ShieldCheck size={32} />
+          </div>
+          <h1 className="text-3xl font-bold text-white tracking-tight">Admin Console</h1>
+          <p className="text-white/40">Secure access to admission records</p>
+        </div>
 
-        <form onSubmit={handleLogin}>
-          <Input 
-            label="Username" 
-            value={username} 
-            onChange={(e) => setUsername(e.target.value)} 
-            required 
-          />
-          <Input 
-            label="Password" 
-            type="password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            required 
-          />
-          
-          <button 
-            type="submit" 
-            className="btn-primary" 
-            disabled={isLoading}
-            style={{ marginTop: '20px' }}
-          >
-            {isLoading ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
-      </div>
-    </main>
+        <div className="glass-panel p-8">
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="bg-accent/10 border border-accent/20 text-accent text-sm p-4 rounded-xl mb-6 flex items-center gap-3"
+            >
+              <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+              {error}
+            </motion.div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="space-y-4">
+              <Input 
+                label="Username" 
+                value={username} 
+                onChange={(e) => setUsername(e.target.value)} 
+                required 
+                placeholder="Admin username"
+              />
+              <Input 
+                label="Password" 
+                type="password" 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+                required 
+                placeholder="••••••••"
+              />
+            </div>
+            
+            <button 
+              type="submit" 
+              disabled={isLoading}
+              className="btn-primary w-full flex items-center justify-center gap-2 py-4 shadow-lg shadow-primary/20 hover:shadow-primary/30"
+            >
+              {isLoading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <>Sign In <ArrowRight size={18} /></>
+              )}
+            </button>
+          </form>
+        </div>
+
+        <p className="text-center mt-8 text-xs text-white/20 uppercase tracking-widest">
+          Authorized Personnel Only
+        </p>
+      </motion.div>
+    </div>
   );
 }
