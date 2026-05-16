@@ -1,6 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { StorageAdapter } from './StorageAdapter';
-import { StudentSubmission } from '@/types';
+import { StudentSubmission, AdminSettings } from '@/types';
 
 export class SupabaseStorageAdapter implements StorageAdapter {
   private supabase: SupabaseClient | null = null;
@@ -36,7 +36,7 @@ export class SupabaseStorageAdapter implements StorageAdapter {
       throw new Error(`Failed to save submission to Supabase: ${error.message}`);
     }
 
-    return newSubmission;
+    return newSubmission as any as StudentSubmission;
   }
 
   async getSubmissions(): Promise<StudentSubmission[]> {
@@ -52,7 +52,7 @@ export class SupabaseStorageAdapter implements StorageAdapter {
       return [];
     }
 
-    return data || [];
+    return (data || []) as any as StudentSubmission[];
   }
 
   async getSubmissionById(id: string): Promise<StudentSubmission | null> {
@@ -69,7 +69,7 @@ export class SupabaseStorageAdapter implements StorageAdapter {
       return null;
     }
 
-    return data;
+    return data as any as StudentSubmission;
   }
 
   async updateSubmissionStatus(id: string, status: string): Promise<boolean> {
@@ -109,8 +109,9 @@ export class SupabaseStorageAdapter implements StorageAdapter {
     if (error) return null;
     return {
       username: data.username,
-      password: data.password
-    };
+      password: data.password,
+      exportedCount: data.exportedCount || 0
+    } as AdminSettings;
   }
 
   async updateAdminSettings(settings: AdminSettings): Promise<boolean> {
@@ -121,7 +122,8 @@ export class SupabaseStorageAdapter implements StorageAdapter {
       .upsert({ 
         id: 1, 
         username: settings.username, 
-        password: settings.password 
+        password: settings.password,
+        exportedCount: settings.exportedCount || 0
       });
 
     return !error;

@@ -114,7 +114,7 @@ class EmailService {
     return this.adapter.sendConfirmationEmail(submission);
   }
 
-  async sendAdminNotification(submission) {
+  async sendAdminNotification(submission: StudentSubmission) {
     return this.adapter.sendAdminNotification(submission);
   }
 }
