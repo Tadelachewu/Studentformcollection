@@ -1,7 +1,8 @@
 import { StorageAdapter } from '../adapters/storage/StorageAdapter';
-import { MemoryStorageAdapter } from '../adapters/storage/MemoryStorageAdapter';
 import { JsonFileStorageAdapter } from '../adapters/storage/JsonFileStorageAdapter';
-import { StudentSubmission } from '@/types';
+import { SupabaseStorageAdapter } from '../adapters/storage/SupabaseStorageAdapter';
+import { PrismaStorageAdapter } from '../adapters/storage/PrismaStorageAdapter';
+import { StudentSubmission, AdminSettings } from '@/types';
 
 class StorageService {
   private adapter: StorageAdapter | null = null;
@@ -12,20 +13,21 @@ class StorageService {
     const provider = process.env.STORAGE_PROVIDER || 'json';
 
     try {
-      if (provider === 'memory') {
-        this.adapter = new MemoryStorageAdapter();
-      } else if (provider === 'json') {
+      if (provider === 'json') {
         this.adapter = new JsonFileStorageAdapter();
+      } else if (provider === 'supabase' || provider === 'prisma') {
+        // Prisma is preferred for Supabase/SQL now
+        this.adapter = new PrismaStorageAdapter();
       } else {
-        console.warn(`Storage provider '${provider}' not natively supported in this demo. Falling back to JSON storage.`);
+        console.warn(`Storage provider '${provider}' not natively supported. Defaulting to JSON storage.`);
         this.adapter = new JsonFileStorageAdapter();
       }
 
       await this.adapter.init();
       return this.adapter;
     } catch (error) {
-      console.error('Failed to initialize primary storage adapter, falling back to MemoryStorageAdapter:', error);
-      this.adapter = new MemoryStorageAdapter();
+      console.error('Failed to initialize storage adapter:', error);
+      this.adapter = new JsonFileStorageAdapter();
       await this.adapter.init();
       return this.adapter;
     }
@@ -49,6 +51,21 @@ class StorageService {
   async updateSubmissionStatus(id: string, status: string) {
     const adapter = await this.getAdapter();
     return adapter.updateSubmissionStatus(id, status);
+  }
+
+  async deleteSubmission(id: string) {
+    const adapter = await this.getAdapter();
+    return adapter.deleteSubmission(id);
+  }
+
+  async getAdminSettings() {
+    const adapter = await this.getAdapter();
+    return adapter.getAdminSettings();
+  }
+
+  async updateAdminSettings(settings: AdminSettings) {
+    const adapter = await this.getAdapter();
+    return adapter.updateAdminSettings(settings);
   }
 }
 

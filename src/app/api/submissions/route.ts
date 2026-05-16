@@ -15,10 +15,10 @@ export async function POST(request: Request) {
     // Save to database-agnostic storage
     const savedSubmission = await storageService.saveSubmission(data);
 
-    // Send emails (async, don't await if you don't want to block, but awaiting here for simplicity)
+    // Send emails
     if (savedSubmission.id) {
-      await emailService.sendConfirmationEmail(data.email, data.fullName);
-      await emailService.sendAdminNotification(savedSubmission.id, data.fullName);
+      await emailService.sendConfirmationEmail(savedSubmission);
+      await emailService.sendAdminNotification(savedSubmission);
     }
 
     return NextResponse.json(savedSubmission, { status: 201 });
