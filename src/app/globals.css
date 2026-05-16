@@ -1,0 +1,147 @@
+:root {
+  --primary: #4F46E5;
+  --primary-hover: #4338CA;
+  --secondary: #10B981;
+  --background: #f3f4f6;
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-hover: rgba(255, 255, 255, 0.9);
+  --text: #1f2937;
+  --text-muted: #6b7280;
+  --border: rgba(255, 255, 255, 0.5);
+  --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  --glass-blur: blur(12px);
+  --error: #EF4444;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: #6366f1;
+    --primary-hover: #818cf8;
+    --background: #111827;
+    --surface: rgba(31, 41, 55, 0.7);
+    --surface-hover: rgba(31, 41, 55, 0.9);
+    --text: #f9fafb;
+    --text-muted: #9ca3af;
+    --border: rgba(255, 255, 255, 0.1);
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  }
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  /* Add a subtle background gradient for premium feel */
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(225,39%,30%,0.2) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(339,49%,30%,0.2) 0, transparent 50%);
+  background-attachment: fixed;
+}
+
+@media (prefers-color-scheme: light) {
+  body {
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(253,16%,97%,1) 0, transparent 50%), 
+      radial-gradient(at 50% 0%, hsla(225,39%,80%,0.4) 0, transparent 50%), 
+      radial-gradient(at 100% 0%, hsla(339,49%,80%,0.4) 0, transparent 50%);
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.glass-panel {
+  background: var(--surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.glass-panel:hover {
+  background: var(--surface-hover);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Base Form Elements */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.input-label {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.error-text {
+  color: var(--error);
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
