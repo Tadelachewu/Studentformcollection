@@ -10,14 +10,15 @@ class StorageService {
   async getAdapter(): Promise<StorageAdapter> {
     if (this.adapter) return this.adapter;
 
-    const provider = process.env.STORAGE_PROVIDER || 'json';
+    const provider = process.env.STORAGE_PROVIDER || (process.env.DATABASE_URL ? 'prisma' : 'json');
 
     try {
-      if (provider === 'json') {
-        this.adapter = new JsonFileStorageAdapter();
-      } else if (provider === 'supabase' || provider === 'prisma') {
-        // Prisma is preferred for Supabase/SQL now
+      if (provider === 'prisma' || (provider === 'supabase' && process.env.DATABASE_URL)) {
         this.adapter = new PrismaStorageAdapter();
+      } else if (provider === 'supabase') {
+        this.adapter = new SupabaseStorageAdapter();
+      } else if (provider === 'json') {
+        this.adapter = new JsonFileStorageAdapter();
       } else {
         console.warn(`Storage provider '${provider}' not natively supported. Defaulting to JSON storage.`);
         this.adapter = new JsonFileStorageAdapter();
@@ -27,6 +28,12 @@ class StorageService {
       return this.adapter;
     } catch (error) {
       console.error('Failed to initialize storage adapter:', error);
+      // On Vercel, JSON adapter will likely fail too, but we try to provide a fallback
+      // or at least let the error bubble up if it's a critical failure
+      if (!this.adapter || this.adapter instanceof JsonFileStorageAdapter) {
+        throw error; // Rethrow if we can't even fall back or if the fallback failed
+      }
+      
       this.adapter = new JsonFileStorageAdapter();
       await this.adapter.init();
       return this.adapter;
