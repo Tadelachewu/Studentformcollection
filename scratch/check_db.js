@@ -9,8 +9,8 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function check() {
-  const all = await prisma.submission.findMany();
-  console.log('All Names:', all.map(s => s.fullName).join(', '));
+  const settings = await prisma.adminSettings.findUnique({ where: { id: 1 } });
+  console.log('Settings:', JSON.stringify(settings, null, 2));
 }
 
 check().catch(console.error).finally(() => {
