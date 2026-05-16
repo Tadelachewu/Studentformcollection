@@ -1,13 +1,19 @@
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient({
-  datasourceUrl: process.env.DATABASE_URL
-});
+const { PrismaPg } = require('@prisma/adapter-pg');
+const { Pool } = require('pg');
+require('dotenv').config();
+
+const connectionString = process.env.DATABASE_URL;
+const pool = new Pool({ connectionString });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 async function check() {
-  const count = await prisma.submission.count();
   const all = await prisma.submission.findMany();
-  console.log('Total submissions:', count);
-  console.log('Submissions:', JSON.stringify(all, null, 2));
+  console.log('All Names:', all.map(s => s.fullName).join(', '));
 }
 
-check().catch(console.error).finally(() => prisma.$disconnect());
+check().catch(console.error).finally(() => {
+  prisma.$disconnect();
+  pool.end();
+});
