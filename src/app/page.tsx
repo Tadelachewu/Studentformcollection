@@ -71,6 +71,12 @@ export default function Home() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const calculateProgress = () => {
+    const requiredFields = ['fullName', 'email', 'phone', 'dob', 'gender', 'previousCourse', 'courseToLearn'];
+    const filled = requiredFields.filter(field => !!formData[field as keyof typeof formData]).length;
+    return (filled / requiredFields.length) * 100;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
@@ -199,7 +205,7 @@ export default function Home() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="text-6xl font-black tracking-tight text-white sm:text-8xl leading-none"
+                    className="text-6xl font-extrabold tracking-tight text-white sm:text-8xl leading-none"
                   >
                     Admission Portal
                   </motion.h1>
@@ -207,7 +213,7 @@ export default function Home() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="text-3xl font-light text-white/40 tracking-tight"
+                    className="text-2xl sm:text-3xl font-medium text-white/70 tracking-tight"
                   >
                     Creative Application Process
                   </motion.div>
@@ -227,7 +233,23 @@ export default function Home() {
                     <h2 className="text-4xl font-bold text-white">Ready to Join Us?</h2>
                     <p className="text-white/50">Fill out the application form below to get started.</p>
                   </div>
-                  <div className="glass-panel p-8 sm:p-10">
+                  <div className="glass-panel p-8 sm:p-10 relative">
+                    {/* Progress Bar */}
+                    <div className="sticky top-0 z-50 bg-[#0f172a]/90 backdrop-blur-md py-4 mb-8 -mx-8 px-8 sm:-mx-10 sm:px-10 border-b border-white/5 rounded-t-[24px]">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-semibold text-white/80">Application Progress</span>
+                        <span className="text-sm font-bold text-[#8b5cf6]">{Math.round(calculateProgress())}%</span>
+                      </div>
+                      <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                        <motion.div 
+                          className="h-full bg-gradient-to-r from-[#6366f1] to-[#8b5cf6]"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${calculateProgress()}%` }}
+                          transition={{ duration: 0.3 }}
+                        />
+                      </div>
+                    </div>
+
                     <form onSubmit={handleSubmit} className="space-y-10">
 
                       {/* Section: Personal */}
@@ -261,7 +283,7 @@ export default function Home() {
                                 <MapPin size={12} /> Get Location
                               </button>
                             </div>
-                            <input className="input-field" name="address" value={formData.address} onChange={handleChange} placeholder="Street address or link..." />
+                            <input className="input-style" name="address" value={formData.address} onChange={handleChange} placeholder="Street address or link..." />
                           </div>
                         </div>
                       </div>
